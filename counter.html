@@ -20,44 +20,41 @@
         margin: 0;
         background: linear-gradient(
           135deg,
-          rgba(255, 179, 186, 0.5),
-          rgba(255, 223, 186, 0.5),
-          rgba(255, 255, 186, 0.5),
-          rgba(186, 255, 201, 0.5),
-          rgba(186, 225, 255, 0.5)
+          #ff9a9e 0%,
+          #fad0c4 30%,
+          #fad0c4 30%,
+          #fbc2eb 50%,
+          #a1c4fd 70%,
+          #c2e9fb 100%
         );
-        background-size: 150% 150%;
-        animation: gradientAnimation 15s ease infinite;
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
       }
-
-      @keyframes gradientAnimation {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
+      @keyframes gradient {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
       }
-
       .card {
         width: 20rem;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
         border-radius: 8px;
-        background-color: #ffffffcc;
+        background-color: rgba(255, 255, 255, 0.8);
       }
-
       .card-title {
         font-size: 3rem;
-        color: #007bff;
+        color: #ffc107; /* สีเหลือง */
       }
-
       .btn-primary {
         width: 100%;
         font-size: 1.2rem;
         font-weight: bold;
+        background-color: #ffc107; /* สีเหลือง */
+        border-color: #ffc107;
+      }
+      .btn-primary:hover {
+        background-color: #e0a800;
+        border-color: #e0a800;
       }
     </style>
   </head>
