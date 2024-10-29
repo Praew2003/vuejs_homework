@@ -11,37 +11,60 @@
     />
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <title>My Counter</title>
+    <style>
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        background-color: #f0f8ff;
+        margin: 0;
+      }
+      .card {
+        width: 20rem;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+      }
+      .card-title {
+        font-size: 3rem;
+        color: #007bff;
+      }
+      .btn-primary {
+        width: 100%;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+    </style>
   </head>
   <body>
     <div id="app" class="container">
-      <div class="card" style="width: 18rem">
+      <div class="card text-center">
         <div class="card-body">
           <h1 class="card-title">{{ number }}</h1>
-          <p class="card-text">Hello, This is my counter</p>
-          <a href="#" class="btn btn-primary" @click="increment()"
-            >add number</a
-          >
+          <p class="card-text">Click the button to increase the counter</p>
+          <button class="btn btn-primary mt-3" @click="increment()">
+            Add Number
+          </button>
         </div>
       </div>
     </div>
 
     <script>
-      const { createApp } = Vue
+      const { createApp } = Vue;
       const app = createApp({
         data() {
           return {
             number: 0,
-          }
+          };
         },
-
         methods: {
           increment() {
-            this.number += 1
+            this.number += 1;
           },
         },
-      })
+      });
 
-      app.mount('#app')
+      app.mount("#app");
     </script>
   </body>
 </html>
