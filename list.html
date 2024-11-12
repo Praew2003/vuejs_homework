@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ลงทะเบียนนักศึกษา</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-font: 'Prompt', sans-serif;
+            --secondary-font: 'Sarabun', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, 
+                rgba(255, 223, 223, 0.3),
+                rgba(255, 241, 223, 0.3),
+                rgba(255, 255, 223, 0.3),
+                rgba(223, 255, 223, 0.3),
+                rgba(223, 223, 255, 0.3)
+            );
+            min-height: 100vh;
+            font-family: var(--secondary-font);
+        }
+
+        h2 {
+            font-family: var(--primary-font);
+            font-weight: 500;
+            background: linear-gradient(45deg, #ffafcc, #bde0fe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-container {
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-floating {
+            position: relative;
+        }
+
+        .form-floating > label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            padding: 1rem 0.75rem;
+            pointer-events: none;
+            transform-origin: 0 0;
+            transition: opacity .1s ease-in-out, transform .1s ease-in-out;
+            color: #666;
+            font-family: var(--primary-font);
+        }
+
+        .form-floating > .form-control:focus ~ label,
+        .form-floating > .form-control:not(:placeholder-shown) ~ label {
+            opacity: .65;
+            transform: scale(.85) translateY(-0.5rem) translateX(0.15rem);
+            background-color: white;
+            padding: 0 5px;
+            left: 10px;
+            top: -5px;
+            height: auto;
+            z-index: 1;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 1rem 0.75rem;
+            font-family: var(--secondary-font);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            box-shadow: 0 0 0 0.25rem rgba(195, 195, 255, 0.25);
+            border-color: #bde0fe;
+        }
+
+        .btn {
+            padding: 12px 40px;
+            font-weight: 500;
+            font-family: var(--primary-font);
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(189, 224, 254, 0.4);
+        }
+
+        .btn-submit {
+            background: linear-gradient(45deg, #ffafcc, #bde0fe);
+            border: none;
+            color: #fff;
+            margin-right: 10px;
+        }
+
+        .btn-reset {
+            background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+            border: none;
+            color: #666;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(45deg, #bde0fe, #ffafcc);
+        }
+
+        .btn-reset:hover {
+            background: linear-gradient(45deg, #e9ecef, #f8f9fa);
+        }
+
+        .is-invalid {
+            border-color: #ff8fa3 !important;
+        }
+
+        .invalid-feedback {
+            color: #ff8fa3;
+            font-family: var(--primary-font);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        textarea.form-control {
+            min-height: 100px;
+        }
+
+        .records-container {
+            margin-top: 30px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .records-table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .records-table th {
+            background: linear-gradient(45deg, #ffafcc, #bde0fe);
+            color: white;
+            padding: 12px;
+            font-family: var(--primary-font);
+        }
+
+        .records-table td {
+            padding: 12px;
+            font-family: var(--secondary-font);
+        }
+
+        .records-count {
+            font-family: var(--primary-font);
+            color: #666;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="form-container">
+                    <h2 class="text-center">แบบฟอร์มลงทะเบียนนักศึกษา</h2>
+                    <form @submit.prevent="submitForm" novalidate>
+                        <div class="form-grid">
+                            <template v-for="field in formFields" :key="field.key">
+                                <div :class="['form-floating', field.fullWidth ? 'full-width' : '']">
+                                    <template v-if="field.type === 'textarea'">
+                                        <textarea 
+                                            class="form-control"
+                                            :class="{'is-invalid': errors[field.key]}"
+                                            v-model="form[field.key]"
+                                            placeholder=" "
+                                            style="height: 100px">
+                                        </textarea>
+                                    </template>
+                                    <template v-else>
+                                        <input 
+                                            :type="field.type"
+                                            class="form-control"
+                                            :class="{'is-invalid': errors[field.key]}"
+                                            v-model="form[field.key]"
+                                            placeholder=" ">
+                                    </template>
+                                    <label>{{ field.label }}</label>
+                                    <div class="invalid-feedback" v-if="errors[field.key]">
+                                        {{ field.errorMessage }}
+                                    </div>
+                                </div>
+                            </template>
+
+                            <div class="full-width text-center mt-4">
+                                <button type="submit" class="btn btn-submit">บันทึกข้อมูล</button>
+                                <button type="button" class="btn btn-reset" @click="resetForm">ล้างข้อมูล</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="records-container" v-if="records.length > 0">
+                    <h3 class="text-center mb-4">รายการที่บันทึก</h3>
+                    <div class="records-count text-center">
+                        จำนวนการบันทึกทั้งหมด: {{ records.length }} รายการ
+                    </div>
+                    <div class="table-responsive">
+                        <table class="records-table">
+                            <thead>
+                                <tr>
+                                    <th>ลำดับ</th>
+                                    <th>ชื่อ-นามสกุล</th>
+                                    <th>รหัสนักศึกษา</th>
+                                    <th>อีเมล</th>
+                                    <th>เบอร์โทร</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr v-for="(record, index) in records" :key="index">
+                                    <td>{{ index + 1 }}</td>
+                                    <td>{{ record.firstName }} {{ record.lastName }}</td>
+                                    <td>{{ record.studentId }}</td>
+                                    <td>{{ record.email }}</td>
+                                    <td>{{ record.phone }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const { createApp } = Vue
+
+        createApp({
+            data() {
+                return {
+                    formFields: [
+                        { key: 'firstName', label: 'ชื่อ', type: 'text', errorMessage: 'กรุณากรอกชื่อ' },
+                        { key: 'lastName', label: 'นามสกุล', type: 'text', errorMessage: 'กรุณากรอกนามสกุล' },
+                        { key: 'phone', label: 'เบอร์โทร', type: 'tel', errorMessage: 'กรุณากรอกเบอร์โทรศัพท์' },
+                        { key: 'studentId', label: 'รหัสนักศึกษา', type: 'text', errorMessage: 'กรุณากรอกรหัสนักศึกษา 10 หลัก' },
+                        { key: 'idCard', label: 'เลขบัตรประชาชน', type: 'text', errorMessage: 'กรุณากรอกเลขบัตรประชาชน 13 หลัก', fullWidth: true },
+                        { key: 'email', label: 'อีเมล', type: 'email', errorMessage: 'กรุณากรอกอีเมลให้ถูกต้อง', fullWidth: true },
+                        { key: 'address', label: 'ที่อยู่', type: 'textarea', errorMessage: 'กรุณากรอกที่อยู่', fullWidth: true }
+                    ],
+                    form: {
+                        firstName: '',
+                        lastName: '',
+                        phone: '',
+                        studentId: '',
+                        idCard: '',
+                        email: '',
+                        address: ''
+                    },
+                    errors: {
+                        firstName: false,
+                        lastName: false,
+                        phone: false,
+                        studentId: false,
+                        idCard: false,
+                        email: false,
+                        address: false
+                    },
+                    records: []
+                }
+            },
+            methods: {
+                validateForm() {
+                    let isValid = true;
+                    
+                    Object.keys(this.errors).forEach(key => {
+                        this.errors[key] = false;
+                    });
+
+                    if (!this.form.firstName.trim()) {
+                        this.errors.firstName = true;
+                        isValid = false;
+                    }
+
+                    if (!this.form.lastName.trim()) {
+                        this.errors.lastName = true;
+                        isValid = false;
+                    }
+
+                    if (!this.form.phone.trim()) {
+                        this.errors.phone = true;
+                        isValid = false;
+                    }
+
+                    if (!this.form.studentId.trim() || !/^\d{10}$/.test(this.form.studentId)) {
+                        this.errors.studentId = true;
+                        isValid = false;
+                    }
+
+                    if (!this.form.idCard.trim() || !/^\d{13}$/.test(this.form.idCard)) {
+                        this.errors.idCard = true;
+                        isValid = false;
+                    }
+
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!this.form.email.trim() || !emailRegex.test(this.form.email)) {
+                        this.errors.email = true;
+                        isValid = false;
+                    }
+
+                    if (!this.form.address.trim()) {
+                        this.errors.address = true;
+                        isValid = false;
+                    }
+
+                    return isValid;
+                },
+                submitForm() {
+                    if (this.validateForm()) {
+                        this.records.push({...this.form});
+                        
+                        Swal.fire({
+                            title: "บันทึกสำเร็จ!",
+                            text: `บันทึกข้อมูลนักศึกษาลำดับที่ ${this.records.length} เรียบร้อยแล้ว`,
+                            icon: "success"
+                        });
+                        
+                        this.resetForm();
+                    }
+                },
+                resetForm() {
+                    Object.keys(this.form).forEach(key => {
+                        this.form[key] = '';
+                    });
+                    Object.keys(this.errors).forEach(key => {
+                        this.errors[key] = false;
+                    });
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
